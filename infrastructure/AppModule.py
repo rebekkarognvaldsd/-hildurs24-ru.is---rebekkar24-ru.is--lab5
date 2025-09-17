@@ -7,6 +7,7 @@ from phone_book.phone_book_fake import PhoneBookFake
 from database.i_phone_book_repository import IPhoneBookRepository
 from database.phone_book_file_repository import PhoneBookFileRepository
 from database.phone_book_sqlite_repository import PhoneBookSqliteRepository
+from environment import Environment
 
 class AppModule():
 
@@ -14,6 +15,7 @@ class AppModule():
         self.__environment = environment
 
     @provider
+    @singleton
     def provide_sqlite3_connection(self) -> Connection:
         return sqlite3.connect("phone_book.db")
 
@@ -26,11 +28,8 @@ class AppModule():
     def provide_phonebook_repository(self, connection: Connection): # Connection er sqlite
         if self.__environment == Environment.STAGING:
             return PhoneBookFileRepository("phone_book.json")
-        elif environment == Environment.PRODUCTION:
-            # connection = sqlite3.connect("phone_book.db")
-            repository = PhoneBookSqliteRepository(connection)
+        elif self.__environment == Environment.PRODUCTION:
+            return sqlite3.connect("phone_book.db"), PhoneBookSqliteRepository(connection)
 
-    # def configure(self, binder: Binder):
-    #     binder.bind(IPhoneBookRepository,
-    #                 to=(PhoneBookFileRepository if self.__environment == "staging" else PhoneBookSqliteRepository))
+
 
