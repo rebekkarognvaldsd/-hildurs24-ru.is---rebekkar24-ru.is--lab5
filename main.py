@@ -117,6 +117,9 @@ def main():
     failure_adding_numbers(phone_book)
 
     print("\n---------------- seeding phone book ----------------\n")
+    print("ENV:", environment)
+    print("phone_book type:", type(phone_book))
+
     seed_phone_book(phone_book)
 
     print("\n---------------- executing operations for sales man 1 ----------------\n")

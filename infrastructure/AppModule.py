@@ -22,7 +22,7 @@ class AppModule(Module):
 
     def configure(self, binder: Binder):
         binder.bind(IPhoneBook,
-                    to=(PhoneBookFake if self.__environment == "developement" else PhoneBook))
+                    to=(PhoneBookFake if self.__environment == Environment.DEVELOPMENT else PhoneBook))
 
     @provider
     def provide_phonebook_repository(self, connection: Connection) -> IPhoneBookRepository: # Connection er sqlite
