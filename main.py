@@ -1,6 +1,7 @@
 import sqlite3
+from injector import Injector
 from typing import List
-
+from infrastructure.AppModule import AppModule
 from database.i_phone_book_repository import IPhoneBookRepository
 from database.phone_book_file_repository import PhoneBookFileRepository
 from database.phone_book_sqlite_repository import PhoneBookSqliteRepository
@@ -81,23 +82,35 @@ def main():
     environment = Environment.DEVELOPMENT
 
     # ------------- REPLACE THIS PART WITH DEPENDENCY INJECTION THAT RESOLVES A PHONE BOOK AND THE SALES MEN -------------
-    phone_book = None
-    validator = PhoneNumberValidator()
-    if environment == Environment.DEVELOPMENT:
-        phone_book = PhoneBookFake(validator)
-    else:
-        repository: IPhoneBookRepository = None
-        if environment == Environment.STAGING:
-            repository = PhoneBookFileRepository("phone_book.json")
-        elif environment == Environment.PRODUCTION:
-            connection = sqlite3.connect("phone_book.db")
-            repository = PhoneBookSqliteRepository(connection)
+  # or STAGING / PRODUCTION
 
-        phone_book = PhoneBook(repository, validator)
+    # Build the injector for the chosen environment
+    injector = Injector([AppModule(environment)])
 
-    sms_sender = SmsSender()
-    sales_man1 = SalesMan(sms_sender, phone_book)
-    sales_man2 = SalesMan(sms_sender, phone_book)
+    # Resolve dependencies from DI instead of manual wiring
+    phone_book = injector.get(IPhoneBook)          # PhoneBookFake or PhoneBook, depending on env
+    sms_sender = injector.get(SmsSender)           # singleton
+
+    # Create two distinct SalesMan objects (not singletons)
+    sales_man1 = injector.create_object(SalesMan)  # auto-injects sms_sender + phone_book
+    sales_man2 = injector.create_object(SalesMan)
+    # phone_book = None
+    # validator = PhoneNumberValidator()
+    # if environment == Environment.DEVELOPMENT:
+    #     phone_book = PhoneBookFake(validator)
+    # else:
+    #     repository: IPhoneBookRepository = None
+    #     if environment == Environment.STAGING:
+    #         repository = PhoneBookFileRepository("phone_book.json")
+    #     elif environment == Environment.PRODUCTION:
+    #         connection = sqlite3.connect("phone_book.db")
+    #         repository = PhoneBookSqliteRepository(connection)
+
+    #     phone_book = PhoneBook(repository, validator)
+
+    # sms_sender = SmsSender()
+    # sales_man1 = SalesMan(sms_sender, phone_book)
+    # sales_man2 = SalesMan(sms_sender, phone_book)
     # -----------------------------------------------------------------------------------------------------------
 
     print("\n---------------- failure adding numbers ----------------\n")

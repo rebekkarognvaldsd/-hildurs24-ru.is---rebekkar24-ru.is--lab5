@@ -1,9 +1,11 @@
 from typing import List
+from injector import inject
 from sms.message import Message
 from sms.sms_sender import SmsSender
 from phone_book.i_phone_book import IPhoneBook
 
 class SalesMan:
+    @inject
     def __init__(self, sms_sender: SmsSender, phone_book: IPhoneBook):
         self.__sms_sender = sms_sender
         self.__phone_book = phone_book
