@@ -8,7 +8,7 @@ class SalesMan:
     @inject
     def __init__(self, sms_sender: SmsSender, phone_book: IPhoneBook):
         self.__sms_sender = sms_sender
-        self.__phone_book = phone_book
+        self.__phone_book:IPhoneBook = phone_book
         self.sent_messages: List[Message] = []
         self.failed_messages: List[Message] = []
 
@@ -24,3 +24,6 @@ class SalesMan:
             self.failed_messages.append(
                 Message(name=name, number=None, message=message)
             )
+
+    def phone_book(self):
+        return self.__phone_book

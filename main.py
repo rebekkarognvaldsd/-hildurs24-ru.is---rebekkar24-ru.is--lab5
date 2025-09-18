@@ -94,6 +94,7 @@ def main():
     # Create two distinct SalesMan objects (not singletons)
     sales_man1 = injector.create_object(SalesMan)  # auto-injects sms_sender + phone_book
     sales_man2 = injector.create_object(SalesMan)
+
     # phone_book = None
     # validator = PhoneNumberValidator()
     # if environment == Environment.DEVELOPMENT:
@@ -117,8 +118,6 @@ def main():
     failure_adding_numbers(phone_book)
 
     print("\n---------------- seeding phone book ----------------\n")
-    print("ENV:", environment)
-    print("phone_book type:", type(phone_book))
 
     seed_phone_book(phone_book)
 
