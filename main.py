@@ -84,15 +84,16 @@ def main():
     # ------------- REPLACE THIS PART WITH DEPENDENCY INJECTION THAT RESOLVES A PHONE BOOK AND THE SALES MEN -------------
   # or STAGING / PRODUCTION
 
-    # Build the injector for the chosen environment
+
+
     injector = Injector([AppModule(environment)])
 
-    # Resolve dependencies from DI instead of manual wiring
-    phone_book = injector.get(IPhoneBook)          # PhoneBookFake or PhoneBook, depending on env
-    sms_sender = injector.get(SmsSender)           # singleton
+    phone_book = injector.get(IPhoneBook)
+    sms_sender = injector.get(SmsSender)
 
-    # Create two distinct SalesMan objects (not singletons)
-    sales_man1 = injector.create_object(SalesMan)  # auto-injects sms_sender + phone_book
+
+
+    sales_man1 = injector.create_object(SalesMan) 
     sales_man2 = injector.create_object(SalesMan)
 
     # phone_book = None
